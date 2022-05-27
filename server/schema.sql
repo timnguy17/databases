@@ -5,39 +5,25 @@ CREATE DATABASE chat;
 USE chat;
 
 CREATE TABLE messages (
-  /* Describe your table here.*/
-  uniqueID int,
+  userID int,
   uniqueName text(20),
-  chatterMessage char(140),
-  roomname text(20),
-  primary key(uniqueID)
-
+  text char(140),
+  roomID int,
+  foreign key(userID) references users(id),
+  foreign key(roomID) referencesrooms()id
 );
-  -- mysql> CREATE TABLE pet (name VARCHAR(20), o-- VARCHAR(20),pri ey ()uniqueID
-  --      species VARCHAR(20), sex CHAR(1), birth DATE, death DATE););
-
-/* Create other tables and define schemas for them here! */
 
 CREATE TABLE users (
-  /* Describe your table here.*/
-  uniqueID int,
-  uniqueName text(20),
-  chatterMessage char(140),
-  roomname text(20),
-  primary key(uniqueID)
-
+  id int,
+  username CHAR(50),
+  primary key(id)
 );
 
 CREATE TABLE rooms (
-  /* Describe your table here.*/
-  uniqueID int,
-  uniqueName text(20),
-  chatterMessage char(140),
-  roomname text(20),
-  primary key(uniqueID)
-
+  id int,
+  roomNameCHAR(50),
+  primary key(id)
 );
-
 
 /*  Execute this file from the command line by typing:
  *    mysql -u root < server/schema.sql

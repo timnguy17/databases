@@ -8,20 +8,22 @@ const API_URL = 'http://127.0.0.1:3000/classes';
 
 describe('Persistent Node Chat Server', () => {
   const dbConnection = mysql.createConnection({
-    user: 'student',
-    password: 'student',
+    user: 'root', //
+    password: '', //made blank no pass
     database: 'chat',
   });
 
   beforeAll((done) => {
     dbConnection.connect();
 
-       const tablename = ''; // TODO: fill this out
+    const tablename = 'messages'; // TODO: fill this out
 
     /* Empty the db table before all tests so that multiple tests
      * (or repeated runs of the tests)  will not fail when they should be passing
      * or vice versa */
     dbConnection.query(`truncate ${tablename}`, done);
+    dbConnection.query(`truncate users`, done);
+    dbConnection.query(`truncate rooms`, done);
   }, 6500);
 
   afterAll(() => {
@@ -48,9 +50,11 @@ describe('Persistent Node Chat Server', () => {
 
         dbConnection.query(queryString, queryArgs, (err, results) => {
           if (err) {
+            console.log(err);
             throw err;
           }
           // Should have one result:
+          console.log('Results: ', results);
           expect(results.length).toEqual(1);
 
           // TODO: If you don't have a column named text, change this test.
@@ -65,8 +69,9 @@ describe('Persistent Node Chat Server', () => {
 
   it('Should output all messages from the DB', (done) => {
     // Let's insert a message into the db
-       const queryString = '';
-       const queryArgs = [];
+
+    const queryString = 'INSERT INTO `messages` (text) VALUES (?, ?, ?)';
+    const queryArgs = [messages, 1, text];
     /* TODO: The exact query string and query args to use here
      * depend on the schema you design, so I'll leave them up to you. */
     dbConnection.query(queryString, queryArgs, (err) => {
@@ -78,6 +83,7 @@ describe('Persistent Node Chat Server', () => {
       axios.get(`${API_URL}/messages`)
         .then((response) => {
           const messageLog = response.data;
+          console.log('Message Log from tests: ', messageLog);
           expect(messageLog[0].text).toEqual(message);
           expect(messageLog[0].roomname).toEqual(roomname);
           done();
